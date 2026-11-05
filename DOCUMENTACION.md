@@ -51,7 +51,7 @@ Archivo `.env` en la raíz del proyecto (no versionar / no compartir):
 | `SUPABASE_KEY` | Clave anon (pública) de Supabase |
 | `SUPABASE_SERVICE_ROLE_KEY` | Clave **service_role** — usada por `database.py` para operaciones con privilegios elevados. Nunca exponerla al frontend. |
 
-`database.py` valida al iniciar que `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` existan; si faltan, la app no arranca.
+`database.py` valida al iniciar que `SUPABASE_URL`, `SUPABASE_KEY` y `SUPABASE_SERVICE_ROLE_KEY` existan; si falta alguna, la app no arranca. Las llamadas a Supabase Auth usan `SUPABASE_KEY`; `SUPABASE_SERVICE_ROLE_KEY` queda reservada para las operaciones privilegiadas del backend.
 
 ## 4. Estructura de carpetas relevantes
 

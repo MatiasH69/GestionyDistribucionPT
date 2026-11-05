@@ -14,15 +14,18 @@ class SupabaseManager:
         """Inicializa la conexión con Supabase utilizando las variables de entorno."""
         url = os.getenv("SUPABASE_URL")
         key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")  # debe ser la service_role, no la anon
+        auth_key = os.getenv("SUPABASE_KEY")
 
-        if not url or not key:
+        if not url or not key or not auth_key:
             raise ValueError(
-                "❌ Error crítico: SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY no están configuradas en el archivo .env.\n"
+                "❌ Error crítico: SUPABASE_URL, SUPABASE_KEY o SUPABASE_SERVICE_ROLE_KEY "
+                "no están configuradas en el archivo .env.\n"
                 "Por favor, revisa que el archivo exista y tenga las credenciales correctas."
             )
 
         self._url = url
         self._key = key
+        self._auth_key = auth_key
 
         # Crear e inicializar el cliente de Supabase (uso exclusivo: operaciones con service_role)
         self.client: Client = create_client(url, key)
@@ -39,7 +42,7 @@ class SupabaseManager:
         try:
             resp = httpx.post(
                 f"{self._url}/auth/v1/token?grant_type=password",
-                headers={"apikey": self._key, "Content-Type": "application/json"},
+                headers={"apikey": self._auth_key, "Content-Type": "application/json"},
                 json={"email": email, "password": password},
                 timeout=10
             )
@@ -74,7 +77,7 @@ class SupabaseManager:
                 f"{self._url}/auth/v1/user",
                 headers={
                     "Authorization": f"Bearer {access_token}",
-                    "apikey": self._key
+                    "apikey": self._auth_key
                 },
                 timeout=10
             )
